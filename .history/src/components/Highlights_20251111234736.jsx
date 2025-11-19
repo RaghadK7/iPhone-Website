@@ -2,18 +2,17 @@ import { useGSAP } from '@gsap/react'
 import React from 'react'
 import gsap from 'gsap'
 import { rightImg, watchImg } from '../utils'
-import VideoCarousel from './VideoCarousel'
 
 const Highlights = () => {
   useGSAP(() => {
     gsap.to('#title', { opacity: 1, y: 0, duration: 0.5 })
-    gsap.to('.link', { opacity: 1, y: 0, duration: 1, stagger: 0.25 })
+    gsap.to('.link', { opacity: 1, y: 0, duration: 0.5, stagger: 0.2 })
   }, [])
 
   return (
     <section
       id="highlights"
-      className="w-screen overflow-hidden h-full common-padding bg-zinc text-white py-20"
+      className="w-screen overflow-hidden h-full common-padding bg-zinc-900 text-white py-20"
     >
       <div className="screen-max-width">
         <div className="mb-12 w-full md:flex items-end justify-between">
@@ -33,8 +32,6 @@ const Highlights = () => {
             </div>
           </div>
         </div>
-
-        <VideoCarousel />
       </div>
     </section>
   )
