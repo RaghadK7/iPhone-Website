@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import ModelView from './ModelView'
@@ -7,8 +7,32 @@ import * as THREE from 'three'
 import { View } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { models, sizes } from '../constans/index'
-
 const Model = () => {
+  const animateWithGsapTimeline = (
+    timeline,
+    rotationRef,
+    rotationState,
+    firstTarget,
+    secondTarget,
+    animationProps
+  ) => {
+    timeline.to(rotationRef.current.rotation, {
+      y: rotationState,
+      duration: 1,
+      ease: 'power2.inOut'
+    })
+
+    timeline.to(firstTarget, {
+      ...animationProps,
+      ease: 'power2.inOut'
+    }, '<')
+
+    timeline.to(secondTarget, {
+      ...animationProps,
+      ease: 'power2.inOut'
+    }, '<')
+  }
+  
   const small = useRef(new THREE.Group())
   const large = useRef(new THREE.Group())
 
@@ -25,9 +49,27 @@ const Model = () => {
   const [smallRotation, setSmallRotation] = useState(0)
   const [largeRotation, setLargeRotation] = useState(0)
 
+  const tl = gsap.timeline()
+
   useGSAP(() => {
     gsap.to('#heading', { opacity: 1, y: 0 })
   }, [])
+
+  useEffect(() => {
+    if (size === 'large') {
+      animateWithGsapTimeline(tl, small, smallRotation, '#view1', '#view2', {
+        transform: 'translateX(-100%)',
+        duration: 2
+      })
+    }
+    
+    if (size === 'small') {
+      animateWithGsapTimeline(tl, large, largeRotation, '#view2', '#view1', {
+        transform: 'translateX(0)',
+        duration: 2
+      })
+    }
+  }, [size])
 
   return (
     <section className='common-padding'>  
@@ -59,7 +101,6 @@ const Model = () => {
               size={size}
             />
 
-            {/* Canvas مع View.Port - هذا هو المفتاح! */}
             <Canvas
               className='w-full h-full'
               style={{
